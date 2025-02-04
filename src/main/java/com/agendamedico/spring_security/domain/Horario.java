@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "horas", indexes = { @Index(name = "idx_hora_minuto", columnList = "hora_minuto") })
 public class Horario extends AbstractEntity {

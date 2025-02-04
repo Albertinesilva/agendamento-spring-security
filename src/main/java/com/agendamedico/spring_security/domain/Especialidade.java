@@ -10,9 +10,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
-// import jakarta.persistence.JoinColumn;
-
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "especialidades", indexes = { @Index(name = "idx_especialidade_titulo", columnList = "titulo") })
 public class Especialidade extends AbstractEntity {

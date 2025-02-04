@@ -13,7 +13,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "usuarios", indexes = { @Index(name = "idx_usuario_email", columnList = "email") })
 public class Usuario extends AbstractEntity {
