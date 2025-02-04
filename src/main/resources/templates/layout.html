@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org" 
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	th:with="version=${#strings.randomAlphanumeric(3)}">
 <head>
@@ -13,9 +12,6 @@
 <meta name="description" content="clínica médica com agendamento de consultas online" />
 <meta name="author" content="ballem" />
 <link rel="icon" th:href="@{/image/favicon.ico}" />
-
-<!--<meta name="_csrf" th:content="${_csrf.token}"/>
-<meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
 
 <!-- Bootstrap core CSS -->
 <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css(v=${version}) }" rel="stylesheet" />
@@ -30,7 +26,7 @@
 
 </head>
 <body>
-	<header th:replace="~{fragments/header :: cabecalho}">
+	<header th:replace="fragments/header :: cabecalho">
 		<div>header</div>
 	</header>
 
@@ -40,11 +36,11 @@
 		</section>		
 	</div>
 
-	<footer th:replace="~{fragments/footer :: rodape}">
+	<footer th:replace="fragments/footer :: rodape">
 		<div>footer</div>
 	</footer>
 	
-	<span th:replace="~{fragments/modal-confirm :: modal-confirm}"></span>
+	<span th:replace="fragments/modal-confirm :: modal-confirm"></span>
 
 	<!-- Bootstrap core JavaScript
     ================================================== -->
@@ -53,15 +49,15 @@
 	<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js(v=${version}) }"></script>
 	<!-- jQueryUI (autocomplete) -->
-	<script src='http://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
+	<script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
 	<!-- 	Datatables JS -->
 	<script	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
 	<script	src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 	<script	src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 	<script	src="https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
 	<!-- 	MEUS JS -->
-	<script th:replace="~{:: js}"></script>	
-	<script th:replace="~{:: inlinescript}" th:inline="javascript"></script>
+	<script th:replace=":: js"></script>	
+	<script th:replace=":: inlinescript" th:inline="javascript"></script>
 
 	<script type="text/javascript">
 		$(function() {

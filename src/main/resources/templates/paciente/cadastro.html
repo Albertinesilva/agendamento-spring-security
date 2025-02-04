@@ -24,21 +24,21 @@
 				<div class="d-flex justify-content-center">
 					<div class="col-md-8 ">
 
-						<div th:replace="~{fragments/alert :: alerta-sucesso}"></div>
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
 
-						<form th:action="${paciente.id == null} ? @{/pacientes/salvar} : @{/pacientes/editar}"
+						<form th:action="${paciente.id == null} ? @{/pacientes/salvar} : @{/pacientes/editar}" 
 								th:object="${paciente}" method="POST" class="was-validated">
-
+							
 							<div class="mb-3">
 								<label for="nome">Nome Completo</label>
 								<div class="input-group">
-									<input type="text" class="form-control" id="nome" placeholder="insira seu nome completo"
+									<input type="text" class="form-control" id="nome" placeholder="insira seu nome completo" 
 											aria-describedby="validationTooltipUsernamePrepend"
 										    th:field="*{nome}" required />
 									<div class="invalid-feedback">Nome é requerido.</div>
 								</div>
 							</div>
-
+							
 							<div class="mb-3">
 								<label for="nome">Data de Nascimento</label>
 								<div class="input-group">
@@ -47,13 +47,13 @@
 										   th:field="*{dtNascimento}" required />
 									<div class="invalid-feedback">Data de nascimento é requerida.</div>
 								</div>
-							</div>
-
+							</div>							
+															
 							<div class="mb-3">
 								<label for="email">Email</label>
 								<div class="input-group">
 									<div class="input-group-prepend">
-										<span class="input-group-text"
+										<span class="input-group-text" 
 												id="validationTooltipUsernamePrepend">@</span>
 									</div>
 									<input type="email" class="form-control" id="email"
@@ -62,15 +62,15 @@
 									<div class="invalid-feedback">Email é requerido.</div>
 								</div>
 							</div>
-
+							
 							<div class="mb-3">
-								<label for="senha">Senha</label>
+								<label for="senha">Senha</label> 
 								<input type="password" class="form-control" id="senha" maxlength="6"
 									placeholder="Insira sua senha de acesso" th:field="*{usuario.senha}" required />
 								<div class="invalid-feedback">Senha é requerida para confirmar a operação.</div>
-							</div>
+							</div>							
 
-							<input type="hidden" th:field="*{id}">
+							<input type="hidden" th:field="*{id}"> 
 							<div class="form-group row">
 								<div class="col-sm-10">
 									<button type="submit" class="btn btn-primary"

@@ -24,7 +24,7 @@
 				<div class="d-flex justify-content-center">
 					<div class="col-md-8">
 
-						<div th:replace="~{fragments/alert :: alerta-sucesso}"></div>
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
 
 						<form th:action="@{/u/cadastro/salvar}"
 								th:object="${usuario}" method="POST" class="was-validated">
@@ -58,7 +58,7 @@
 									<option value="2">Médico</option>
 									<option value="3">Paciente</option>
 								</select>
-								<input type="hidden" value="0" name="perfis" />
+
 								<div class="invalid-feedback">Pelo menos um perfil é requerido.</div>
 							</div>
 							
@@ -91,13 +91,6 @@
 
 	</section>
 	<script	th:src="~{}" th:fragment="js"></script>
-	<script th:inline="javascript" th:fragment="inlinescript">
-		$('#perfis').ready(function(){
-			var perfis = [[${usuario.perfis}]];
-			$.each(perfis, function(k, v) {
-				$('#perfis option[value="'+ v.id +'"]').attr('selected', 'selected');
-			})
-		});
-	</script>
+	<script th:inline="javascript" th:fragment="inlinescript"></script>
 </body>
 </html>
