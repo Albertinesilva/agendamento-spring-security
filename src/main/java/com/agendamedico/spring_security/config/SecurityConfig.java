@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -25,6 +24,13 @@ public class SecurityConfig {
     http.authorizeHttpRequests(authorize -> authorize
         .requestMatchers("/webjars/**", "/css/**", "/image/**", "/js/**").permitAll()
         .requestMatchers("/", "/home").permitAll()
+
+        // acessos privados admin
+        .requestMatchers("/u/**").hasAuthority("ADMIN")
+
+        // acessos privados medicos
+        .requestMatchers("/medicos/**").hasAuthority("MEDICO")
+
         .anyRequest().authenticated())
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
