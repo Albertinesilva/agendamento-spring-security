@@ -1,10 +1,6 @@
 package com.agendamedico.spring_security.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,8 +44,7 @@ public class UsuarioService implements UserDetailsService {
             .toList());
   }
 
-  @SuppressWarnings("unused")
-  private String[] getAuthorities(List<Perfil> perfis) {
+  /*private String[] getAuthorities(List<Perfil> perfis) {
 
     // Versão mais enxuta com stream().map():
     return perfis.stream().map(Perfil::getDesc).toArray(String[]::new);
@@ -66,6 +61,6 @@ public class UsuarioService implements UserDetailsService {
     // perfis.forEach(perfil -> authoritiesList.add(perfil.getDesc()));
     // return authoritiesList.toArray(new String[0]);
 
-  }
+  }*/
 
 }
