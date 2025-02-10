@@ -29,12 +29,13 @@ public class UsuarioService implements UserDetailsService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Usuario usuario = usuarioRepository.findByEmail(username);
+    Usuario usuario = buscarPorEmail(username);
     // return new User(
-    //     usuario.getEmail(),
-    //     usuario.getSenha(),
-    //     AuthorityUtils.createAuthorityList(getAuthorities(usuario.getPerfis()))
+    // usuario.getEmail(),
+    // usuario.getSenha(),
+    // AuthorityUtils.createAuthorityList(getAuthorities(usuario.getPerfis()))
     // );
 
     // Versão mais enxuta com stream().map():
@@ -44,20 +45,19 @@ public class UsuarioService implements UserDetailsService {
         usuario.getPerfis().stream()
             .map(Perfil::getDesc)
             .map(SimpleGrantedAuthority::new)
-            .toList()
-    );
+            .toList());
   }
 
   @SuppressWarnings("unused")
   private String[] getAuthorities(List<Perfil> perfis) {
-    
+
     // Versão mais enxuta com stream().map():
     return perfis.stream().map(Perfil::getDesc).toArray(String[]::new);
 
     // Versão com for tradicional
     // String[] authorities = new String[perfis.size()];
     // for (int i = 0; i < perfis.size(); i++) {
-    //   authorities[i] = perfis.get(i).getDesc();
+    // authorities[i] = perfis.get(i).getDesc();
     // }
     // return authorities;
 
