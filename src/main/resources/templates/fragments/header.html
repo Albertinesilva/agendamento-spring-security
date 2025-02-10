@@ -44,8 +44,9 @@
 						</div>
 					</li>
 				</ul>
-
-				<form class="form-inline mt-2 mt-md-0" sec:authorize="!isAuthenticated()">
+				<!-- Se o usuário estiver logado → isAuthenticated() == true, isAnonymous() == false 
+				  Se o usuário NÃO estiver logado → isAuthenticated() == false, isAnonymous() == true -->
+				<form class="form-inline mt-2 mt-md-0" sec:authorize="isAnonymous()">
 					<div class="form-check mb-2 mr-sm-2">
 						<a class="btn btn-outline-success my-2 my-sm-0" role="button" th:href="@{/login}">Login</a>
 					</div>
