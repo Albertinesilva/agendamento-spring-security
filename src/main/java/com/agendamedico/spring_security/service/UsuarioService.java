@@ -93,4 +93,9 @@ public class UsuarioService implements UserDetailsService {
     usuarioRepository.save(usuario);
   }
 
+  @Transactional(readOnly = true)
+  public Usuario buscarPorId(Long id) {
+    return usuarioRepository.findById(id).get();
+  }
+
 }
