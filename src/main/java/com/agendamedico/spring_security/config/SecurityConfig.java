@@ -39,6 +39,11 @@ public class SecurityConfig {
             .permitAll())
         .logout(logout -> logout
             .logoutSuccessUrl("/"));
+
+    // Configuração para tratar acessos negados
+    http.exceptionHandling(exception -> exception
+        .accessDeniedPage("/acesso-negado"));
+
     return http.build();
 
   }
