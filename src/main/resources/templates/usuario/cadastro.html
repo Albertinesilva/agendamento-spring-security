@@ -6,7 +6,6 @@
 </head>
 
 <body>
-
 	<section class="layout-content" layout:fragment="corpo">
 		<main role="main">
 
@@ -20,7 +19,6 @@
 
 			<div class="album py-5 bg-light">
 				<div class="container">
-
 					<div class="d-flex justify-content-center">
 						<div class="col-md-8">
 
@@ -49,7 +47,7 @@
 
 								<div class="mb-3">
 									<label for="perfis">Perfil</label>
-									<select id="perfis" class="custom-select" size="4" th:field="*{perfis}" multiple required>
+									<select id="perfis" class="custom-select" size="4" th:field="*{perfis}" multiple required autofocus>
 										<option value="1">Administrador</option>
 										<option value="2">Médico</option>
 										<option value="3">Paciente</option>
@@ -76,17 +74,33 @@
 									</div>
 								</div>
 							</form>
-
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</main>
-
 	</section>
 	<script th:src="~{}" th:fragment="js"></script>
-	<script th:inline="javascript" th:fragment="inlinescript"></script>
+	<!-- <script th:inline="javascript" th:fragment="inlinescript">
+		$('#perfis').ready(function () {
+			var perfis = [[${ usuario.perfis }]];
+			$.each(perfis, function (k, v) {
+				$('#perfis option[value="' + v.id + '"]').attr('selected', 'selected');
+			})
+
+		});
+	</script> -->
+	<script th:inline="javascript" th:fragment="inlinescript">
+		$(document).ready(function () {
+			var perfis = /*[[${usuario.perfis}]]*/[];
+
+			if (Array.isArray(perfis)) {
+				$.each(perfis, function (k, v) {
+					$('#perfis option[value="' + v.id + '"]').prop('selected', true);
+				});
+			}
+		});
+	</script>
 </body>
 
 </html>
