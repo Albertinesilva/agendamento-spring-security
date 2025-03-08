@@ -1,10 +1,10 @@
 package com.agendamedico.spring_security.web.controller;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,8 +56,13 @@ public class UsuarioController {
       attr.addFlashAttribute("falha", "Paciente não pode ser Admin e/ou Médico!");
       attr.addFlashAttribute("usuario", usuario);
     } else {
-      usuarioService.salvarUsuario(usuario);
-      attr.addFlashAttribute("sucesso", "Operação realizada com sucesso!");
+      try {
+        usuarioService.salvarUsuario(usuario);
+        attr.addFlashAttribute("sucesso", "Operação realizada com sucesso!");
+      } catch (DataIntegrityViolationException ex) {
+        attr.addFlashAttribute("falha", "Cadastro não realizado, email já existente!");
+      }
+
     }
     return "redirect:/u/novo/cadastro/usuario";
   }
