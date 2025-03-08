@@ -1,5 +1,6 @@
 package com.agendamedico.spring_security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,13 +14,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.agendamedico.spring_security.domain.Perfil;
+import com.agendamedico.spring_security.domain.PerfilTipo;
+import com.agendamedico.spring_security.domain.Usuario;
+import com.agendamedico.spring_security.service.UsuarioService;
+
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
 
+  private static final String ADMIN = PerfilTipo.ADMIN.getDesc();
+  private static final String MEDICO = PerfilTipo.MEDICO.getDesc();
+  private static final String PACIENTE = PerfilTipo.PACIENTE.getDesc();
+
+  @Autowired
+  private UsuarioService usuarioService;
+
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+
     // acessos públicos liberados
     http.authorizeHttpRequests(authorize -> authorize
         .requestMatchers("/webjars/**", "/css/**", "/image/**", "/js/**").permitAll()
@@ -30,6 +44,12 @@ public class SecurityConfig {
 
         // acessos privados medicos
         .requestMatchers("/medicos/**").hasAuthority("MEDICO")
+
+        // acessos privados especialidades
+        .requestMatchers("/especialidades/**").hasAuthority("ADMIN")
+
+        // acessos privados pacientes
+        .requestMatchers("/pacientes/**").hasAuthority("PACIENTE")
 
         .anyRequest().authenticated())
         .formLogin(formLogin -> formLogin

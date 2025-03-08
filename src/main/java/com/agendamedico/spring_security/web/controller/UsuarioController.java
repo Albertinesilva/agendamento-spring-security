@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.agendamedico.spring_security.domain.Perfil;
+import com.agendamedico.spring_security.domain.PerfilTipo;
 import com.agendamedico.spring_security.domain.Usuario;
 import com.agendamedico.spring_security.service.UsuarioService;
 
@@ -75,5 +76,29 @@ public class UsuarioController {
     ModelAndView mv = new ModelAndView("usuario/cadastro");
     mv.addObject("usuario", usuarioService.buscarPorId(id));
     return mv;
+  }
+
+  // pre edição de cadastro de usuários
+  @GetMapping("/editar/dados/usuario/{id}/perfis/{perfis}")
+  public ModelAndView preEditarCadastroDadosPessoais(@PathVariable("id") Long usuarioId,
+      @PathVariable("perfis") Long[] perfisId) {
+    Usuario usuario = usuarioService.buscarPorIdEPerfis(usuarioId, perfisId);
+    
+    if (usuario.getPerfis().contains(new Perfil(PerfilTipo.ADMIN.getCod())) &&
+        !usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))) {
+      return new ModelAndView("usuario/cadastro", "usuario", usuario);
+
+    } else if (usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))) {
+      return new ModelAndView("especialidade/especialidade");
+
+    } else if (usuario.getPerfis().contains(new Perfil(PerfilTipo.PACIENTE.getCod()))) {
+      ModelAndView mv = new ModelAndView("error");
+      mv.addObject("status", 403);
+      mv.addObject("error", "Área Restrita");
+      mv.addObject("message", "Os dados de pacientes são restritos a ele mesmo");
+      return mv;
+    }
+    return new ModelAndView("redirect:/u/lista");
+
   }
 }
