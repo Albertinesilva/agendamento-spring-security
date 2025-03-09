@@ -83,7 +83,7 @@ public class UsuarioController {
   public ModelAndView preEditarCadastroDadosPessoais(@PathVariable("id") Long usuarioId,
       @PathVariable("perfis") Long[] perfisId) {
     Usuario usuario = usuarioService.buscarPorIdEPerfis(usuarioId, perfisId);
-    
+
     if (usuario.getPerfis().contains(new Perfil(PerfilTipo.ADMIN.getCod())) &&
         !usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))) {
       return new ModelAndView("usuario/cadastro", "usuario", usuario);
