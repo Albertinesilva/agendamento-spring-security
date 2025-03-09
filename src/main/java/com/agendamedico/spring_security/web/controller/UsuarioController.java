@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.agendamedico.spring_security.domain.Medico;
 import com.agendamedico.spring_security.domain.Perfil;
 import com.agendamedico.spring_security.domain.PerfilTipo;
 import com.agendamedico.spring_security.domain.Usuario;
+import com.agendamedico.spring_security.service.MedicoService;
 import com.agendamedico.spring_security.service.UsuarioService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +29,9 @@ public class UsuarioController {
 
   @Autowired
   private UsuarioService usuarioService;
+
+  @Autowired
+  private MedicoService medicoService;
 
   // abrir cadastro de usuários (medico/admin/paciente)
   @GetMapping("/novo/cadastro/usuario")
@@ -89,7 +94,11 @@ public class UsuarioController {
       return new ModelAndView("usuario/cadastro", "usuario", usuario);
 
     } else if (usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))) {
-      return new ModelAndView("especialidade/especialidade");
+
+      Medico medico = medicoService.buscarPorUsuarioId(usuarioId);
+      return medico.hasNotId()
+          ? new ModelAndView("medico/cadastro", "medico", new Medico(new Usuario(usuarioId)))
+          : new ModelAndView("medico/cadastro", "medico", medico);
 
     } else if (usuario.getPerfis().contains(new Perfil(PerfilTipo.PACIENTE.getCod()))) {
       ModelAndView mv = new ModelAndView("error");
