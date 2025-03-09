@@ -38,16 +38,17 @@ public class SecurityConfig {
         .requestMatchers("/", "/home").permitAll()
 
         // acessos privados admin
-        .requestMatchers("/u/**").hasAuthority("ADMIN")
+        .requestMatchers("/u/**").hasAuthority(ADMIN)
 
         // acessos privados medicos
-        .requestMatchers("/medicos/**").hasAuthority("MEDICO")
+        .requestMatchers("/medicos/dados", "/medicos/salvar", "/medicos/editar").hasAnyAuthority(MEDICO, ADMIN)
+        .requestMatchers("/medicos/**").hasAuthority(MEDICO)
 
         // acessos privados especialidades
-        .requestMatchers("/especialidades/**").hasAuthority("ADMIN")
+        .requestMatchers("/especialidades/**").hasAuthority(ADMIN)
 
         // acessos privados pacientes
-        .requestMatchers("/pacientes/**").hasAuthority("PACIENTE")
+        .requestMatchers("/pacientes/**").hasAuthority(PACIENTE)
 
         .anyRequest().authenticated())
         .formLogin(formLogin -> formLogin

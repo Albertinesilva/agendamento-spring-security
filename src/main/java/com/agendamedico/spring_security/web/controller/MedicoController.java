@@ -28,7 +28,7 @@ public class MedicoController {
   @PostMapping("/salvar")
   public String salvar(Medico medico, RedirectAttributes attr) {
     medicoService.salvar(medico);
-    attr.addFlashAttribute("success", "Medico inserido com sucesso.");
+    attr.addFlashAttribute("sucesso", "Medico inserido com sucesso.");
     attr.addFlashAttribute("medico", medico);
     return "redirect:/medicos/dados";
   }
@@ -37,7 +37,7 @@ public class MedicoController {
   @PostMapping("/editar")
   public String editar(Medico medico, RedirectAttributes attr) {
     medicoService.editar(medico);
-    attr.addFlashAttribute("success", "Operação realizada com sucesso.");
+    attr.addFlashAttribute("sucesso", "Operação realizada com sucesso.");
     attr.addFlashAttribute("medico", medico);
     return "redirect:/medicos/dados";
   }
