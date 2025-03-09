@@ -1,6 +1,8 @@
 package com.agendamedico.spring_security.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.agendamedico.spring_security.domain.Medico;
+import com.agendamedico.spring_security.domain.Usuario;
 import com.agendamedico.spring_security.service.MedicoService;
+import com.agendamedico.spring_security.service.UsuarioService;
 
 @Controller
 @RequestMapping("/medicos")
@@ -17,6 +21,9 @@ public class MedicoController {
 
   @Autowired
   private MedicoService medicoService;
+
+  @Autowired
+  private UsuarioService usuarioService;
 
   // abrir pagina de dados pessoais de medicos pelo MEDICO
   @GetMapping("/dados")
@@ -26,7 +33,11 @@ public class MedicoController {
 
   // salvar dados pessoais de medicos pelo MEDICO
   @PostMapping("/salvar")
-  public String salvar(Medico medico, RedirectAttributes attr) {
+  public String salvar(Medico medico, RedirectAttributes attr, @AuthenticationPrincipal User user) {
+    if (medico.hasNotId() && medico.getUsuario().hasNotId()) {
+      Usuario usuario = usuarioService.buscarPorEmail(user.getUsername());
+      medico.setUsuario(usuario);
+    }
     medicoService.salvar(medico);
     attr.addFlashAttribute("sucesso", "Medico inserido com sucesso.");
     attr.addFlashAttribute("medico", medico);
