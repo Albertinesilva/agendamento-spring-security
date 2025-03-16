@@ -38,6 +38,7 @@ public class SecurityConfig {
         .requestMatchers("/", "/home").permitAll()
 
         // acessos privados admin
+        .requestMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(MEDICO)
         .requestMatchers("/u/**").hasAuthority(ADMIN)
 
         // acessos privados medicos
