@@ -1,5 +1,6 @@
 package com.agendamedico.spring_security.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,11 @@ public class EspecialidadeService {
   @Transactional(readOnly = false)
   public void remover(Long id) {
     especialidadeRepository.deleteById(id);
+  }
+
+  @Transactional(readOnly = true)
+  public List<String> buscarEspecialidadeByTermo(String termo) {
+    return especialidadeRepository.findEspecialidadesByTermo(termo);
   }
 
 }
