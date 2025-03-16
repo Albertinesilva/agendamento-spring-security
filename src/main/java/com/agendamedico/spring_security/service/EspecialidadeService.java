@@ -2,6 +2,7 @@ package com.agendamedico.spring_security.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,10 @@ public class EspecialidadeService {
   @Transactional(readOnly = true)
   public List<String> buscarEspecialidadeByTermo(String termo) {
     return especialidadeRepository.findEspecialidadesByTermo(termo);
+  }
+
+  public Set<Especialidade> buscarPorTitulos(String[] titulos) {
+    return especialidadeRepository.findByTitulos(titulos);
   }
 
 }
