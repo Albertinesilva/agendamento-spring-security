@@ -24,8 +24,10 @@ import com.agendamedico.spring_security.service.UsuarioService;
  * configura a autenticação e o gerenciamento de senhas.
  * </p>
  * <p>
- * Usuários podem acessar páginas públicas sem autenticação, enquanto rotas específicas
- * exigem permissões baseadas nos perfis {@code ADMIN}, {@code MEDICO} e {@code PACIENTE}.
+ * Usuários podem acessar páginas públicas sem autenticação, enquanto rotas
+ * específicas
+ * exigem permissões baseadas nos perfis {@code ADMIN}, {@code MEDICO} e
+ * {@code PACIENTE}.
  * </p>
  */
 @Configuration
@@ -43,12 +45,13 @@ public class SecurityConfig {
   /**
    * Configura a cadeia de filtros de segurança para controle de acessos.
    * <p>
-   * - Permite acesso público a arquivos estáticos (CSS, JS, imagens).  
-   * - Restringe rotas específicas com base no perfil do usuário.  
-   * - Configura login, logout e tratamento de erros de permissão.  
+   * - Permite acesso público a arquivos estáticos (CSS, JS, imagens).
+   * - Restringe rotas específicas com base no perfil do usuário.
+   * - Configura login, logout e tratamento de erros de permissão.
    * </p>
    *
-   * @param http Objeto {@link HttpSecurity} usado para configurar as regras de segurança.
+   * @param http Objeto {@link HttpSecurity} usado para configurar as regras de
+   *             segurança.
    * @return Uma instância de {@link SecurityFilterChain} contendo a configuração.
    * @throws Exception Caso ocorra um erro ao configurar a segurança.
    */
@@ -61,23 +64,23 @@ public class SecurityConfig {
         .requestMatchers("/", "/home").permitAll()
 
         // Permissões para Administradores
-        .requestMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(MEDICO)
+        .requestMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(PACIENTE, MEDICO)
         .requestMatchers("/u/**").hasAuthority(ADMIN)
 
         // Permissões para Médicos
         .requestMatchers("/medicos/dados", "/medicos/salvar", "/medicos/editar").hasAnyAuthority(MEDICO, ADMIN)
         .requestMatchers("/medicos/**").hasAuthority(MEDICO)
 
+        // Permissões para Pacientes
+        .requestMatchers("/pacientes/**").hasAuthority(PACIENTE)
+
         // Permissões para Especialidades
         .requestMatchers("/especialidades/datatables/server/medico/*").hasAnyAuthority(ADMIN, MEDICO)
         .requestMatchers("/especialidades/titulo").hasAnyAuthority(ADMIN, MEDICO)
         .requestMatchers("/especialidades/**").hasAnyAuthority(ADMIN)
 
-        // Permissões para Pacientes
-        .requestMatchers("/pacientes/**").hasAuthority(PACIENTE)
-
         .anyRequest().authenticated())
-        
+
         // Configuração de login
         .formLogin(formLogin -> formLogin
             .loginPage("/login") // Página customizada de login
@@ -99,9 +102,10 @@ public class SecurityConfig {
   }
 
   /**
-   * Define um bean para codificação de senhas usando {@link BCryptPasswordEncoder}.
+   * Define um bean para codificação de senhas usando
+   * {@link BCryptPasswordEncoder}.
    * <p>
-   * O {@code BCryptPasswordEncoder} gera um hash seguro e é recomendado para 
+   * O {@code BCryptPasswordEncoder} gera um hash seguro e é recomendado para
    * armazenamento de senhas no banco de dados.
    * </p>
    *
@@ -121,17 +125,21 @@ public class SecurityConfig {
    * </p>
    * <p>
    * Exemplo de uso:
+   * 
    * <pre>
    * {@code
    * AuthenticationManager authManager = authenticationManager(userDetailsService, passwordEncoder);
-   * Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken("user", "password"));
+   * Authentication authentication = authManager
+   *     .authenticate(new UsernamePasswordAuthenticationToken("user", "password"));
    * }
    * </pre>
    * </p>
    *
-   * @param userDetailsService Serviço que fornece os detalhes do usuário autenticado.
-   * @param passwordEncoder Codificador de senhas utilizado para validação.
-   * @return Uma instância de {@link AuthenticationManager} gerenciando a autenticação.
+   * @param userDetailsService Serviço que fornece os detalhes do usuário
+   *                           autenticado.
+   * @param passwordEncoder    Codificador de senhas utilizado para validação.
+   * @return Uma instância de {@link AuthenticationManager} gerenciando a
+   *         autenticação.
    * @see DaoAuthenticationProvider
    */
   @Bean
