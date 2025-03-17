@@ -1,6 +1,7 @@
 package com.agendamedico.spring_security.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -66,6 +67,12 @@ public class MedicoController {
     medicoService.excluirEspecializacao(idMed, idEsp);
     attr.addFlashAttribute("sucesso", "Especialidade removida com sucesso.");
     return "redirect:/medicos/dados";
+  }
+
+  // buscar médicos por especialidade via ajax
+  @GetMapping("/especialidade/titulo/{titulo}")
+  public ResponseEntity<?> getMedicosPorEspecialidade(@PathVariable("titulo") String titulo) {
+    return ResponseEntity.ok(medicoService.buscarMedicosPorEspecialidade(titulo));
   }
 
 }

@@ -64,11 +64,12 @@ public class SecurityConfig {
         .requestMatchers("/", "/home").permitAll()
 
         // Permissões para Administradores
-        .requestMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(PACIENTE, MEDICO)
+        .requestMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(MEDICO, PACIENTE)
         .requestMatchers("/u/**").hasAuthority(ADMIN)
 
         // Permissões para Médicos
-        .requestMatchers("/medicos/dados", "/medicos/salvar", "/medicos/editar").hasAnyAuthority(MEDICO, ADMIN)
+        .requestMatchers("/medicos/especialidade/titulo/*").hasAuthority(PACIENTE)
+        .requestMatchers("/medicos/dados", "/medicos/salvar", "/medicos/editar").hasAnyAuthority(ADMIN, MEDICO)
         .requestMatchers("/medicos/**").hasAuthority(MEDICO)
 
         // Permissões para Pacientes
@@ -76,7 +77,7 @@ public class SecurityConfig {
 
         // Permissões para Especialidades
         .requestMatchers("/especialidades/datatables/server/medico/*").hasAnyAuthority(ADMIN, MEDICO)
-        .requestMatchers("/especialidades/titulo").hasAnyAuthority(ADMIN, MEDICO)
+        .requestMatchers("/especialidades/titulo").hasAnyAuthority(ADMIN, MEDICO, PACIENTE)
         .requestMatchers("/especialidades/**").hasAnyAuthority(ADMIN)
 
         .anyRequest().authenticated())

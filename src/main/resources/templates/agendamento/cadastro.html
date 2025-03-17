@@ -69,7 +69,8 @@
 										<small id="hr-small" class="form-text text-muted">Horários disponíveis
 											para a consulta</small>
 										<select id="horarios" class="custom-select" size="5" th:field="*{horario.id}" required>
-											<option th:value="*{horario.id}" th:text="*{horario.horaMinuto}"></option>
+											<option th:value="*{horario.id}" th:text="*{horario.horaMinuto}">
+											</option>
 										</select>
 										<div class="invalid-feedback">Horário é obrigatório</div>
 									</div>
