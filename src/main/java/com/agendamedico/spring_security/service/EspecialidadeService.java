@@ -25,11 +25,24 @@ public class EspecialidadeService {
   @Autowired
   private Datatables dataTables;
 
+  /**
+   * Salva uma especialidade no banco de dados.
+   *
+   * @param especialidade A especialidade a ser salva.
+   */
   @Transactional(readOnly = false)
   public void salvar(Especialidade especialidade) {
     especialidadeRepository.save(especialidade);
   }
 
+  /**
+   * Busca especialidades com base nos filtros de pesquisa fornecidos na
+   * requisição HTTP.
+   *
+   * @param request A requisição HTTP contendo os parâmetros de filtro e
+   *                paginação.
+   * @return Um mapa contendo os dados da página de especialidades.
+   */
   @Transactional(readOnly = true)
   public Map<String, Object> buscarEspecialidades(HttpServletRequest request) {
     dataTables.setRequest(request);
@@ -40,26 +53,60 @@ public class EspecialidadeService {
     return dataTables.getResponse(page);
   }
 
+  /**
+   * Busca uma especialidade pelo seu ID.
+   *
+   * @param id O ID da especialidade a ser buscada.
+   * @return A especialidade encontrada.
+   * @throws RuntimeException Se a especialidade não for encontrada.
+   */
   @Transactional(readOnly = true)
   public Especialidade buscarPorId(Long id) {
     return especialidadeRepository.findById(id).get();
   }
 
+  /**
+   * Remove uma especialidade pelo seu ID.
+   *
+   * @param id O ID da especialidade a ser removida.
+   */
   @Transactional(readOnly = false)
   public void remover(Long id) {
     especialidadeRepository.deleteById(id);
   }
 
+  /**
+   * Busca especialidades com base em um termo de pesquisa.
+   *
+   * @param termo O termo de pesquisa a ser utilizado no filtro.
+   * @return Uma lista de títulos de especialidades que correspondem ao termo de
+   *         pesquisa.
+   */
   @Transactional(readOnly = true)
   public List<String> buscarEspecialidadeByTermo(String termo) {
     return especialidadeRepository.findEspecialidadesByTermo(termo);
   }
 
+  /**
+   * Busca especialidades com base em um array de títulos.
+   *
+   * @param titulos Um array de títulos de especialidades.
+   * @return Um conjunto de especialidades que correspondem aos títulos
+   *         fornecidos.
+   */
   @Transactional(readOnly = true)
   public Set<Especialidade> buscarPorTitulos(String[] titulos) {
     return especialidadeRepository.findByTitulos(titulos);
   }
 
+  /**
+   * Busca especialidades de um médico específico.
+   *
+   * @param id      O ID do médico.
+   * @param request A requisição HTTP contendo os parâmetros de filtro e
+   *                paginação.
+   * @return Um mapa contendo os dados da página de especialidades do médico.
+   */
   @Transactional(readOnly = true)
   public Map<String, Object> buscarEspecialidadesPorMedico(Long id, HttpServletRequest request) {
     dataTables.setRequest(request);

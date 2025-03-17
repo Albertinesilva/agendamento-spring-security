@@ -13,11 +13,23 @@ public class MedicoService {
   @Autowired
   private MedicoRepository medicoRepository;
 
+  /**
+   * Busca um médico pelo ID do usuário associado.
+   *
+   * @param id O ID do usuário.
+   * @return O médico associado ao usuário, ou um novo médico caso não seja
+   *         encontrado.
+   */
   @Transactional(readOnly = false)
   public Medico buscarPorUsuarioId(Long id) {
     return medicoRepository.findByUsuarioId(id).orElse(new Medico());
   }
 
+  /**
+   * Salva um médico no banco de dados.
+   *
+   * @param medico O médico a ser salvo.
+   */
   @Transactional(readOnly = false)
   public void salvar(Medico medico) {
     medicoRepository.save(medico);
@@ -30,8 +42,7 @@ public class MedicoService {
    * Não é necessário chamar {@code medicoRepository.save(medico)} porque o
    * Hibernate
    * mantém a entidade no estado persistente. Qualquer alteração feita no objeto
-   * será
-   * automaticamente sincronizada com o banco de dados no final da transação.
+   * será automaticamente sincronizada com o banco de dados no final da transação.
    * </p>
    *
    * @param medico Objeto {@link Medico} contendo os dados atualizados.
@@ -47,11 +58,24 @@ public class MedicoService {
     }
   }
 
+  /**
+   * Busca um médico pelo e-mail do usuário associado.
+   *
+   * @param email O e-mail do usuário.
+   * @return O médico associado ao usuário, ou um novo médico caso não seja
+   *         encontrado.
+   */
   @Transactional(readOnly = true)
   public Medico buscarPorEmail(String email) {
     return medicoRepository.findByUsuarioEmail(email).orElse(new Medico());
   }
 
+  /**
+   * Exclui uma especialização de um médico.
+   *
+   * @param idMed O ID do médico.
+   * @param idEsp O ID da especialização a ser removida.
+   */
   @Transactional(readOnly = false)
   public void excluirEspecializacao(Long idMed, Long idEsp) {
     Medico medico = medicoRepository.findById(idMed).get();
