@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.agendamedico.spring_security.config.exception.AcessoNegadoException;
+
 /**
  * Classe de tratamento global de exceções na aplicação.
  * 
@@ -29,6 +31,19 @@ public class ExceptionController {
 
     // Adicionando atributos à ModelAndView para exibição
     mv.addObject("status", 404);
+    mv.addObject("error", "Operação não pode ser realizada");
+    mv.addObject("message", ex.getMessage());
+
+    return mv;
+  }
+
+  @ExceptionHandler(AcessoNegadoException.class)
+  public ModelAndView acessoNegadoException(AcessoNegadoException ex) {
+    // Criação da ModelAndView para exibir a página de erro
+    ModelAndView mv = new ModelAndView("error");
+
+    // Adicionando atributos à ModelAndView para exibição
+    mv.addObject("status", 403);
     mv.addObject("error", "Operação não pode ser realizada");
     mv.addObject("message", ex.getMessage());
 

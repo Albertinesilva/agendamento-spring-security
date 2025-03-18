@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.agendamedico.spring_security.config.exception.AcessoNegadoException;
 import com.agendamedico.spring_security.datatables.Datatables;
 import com.agendamedico.spring_security.datatables.DatatablesColunas;
 import com.agendamedico.spring_security.domain.Agendamento;
@@ -60,9 +61,16 @@ public class AgendamentoService {
     return agendamentoRepository.findById(id).get();
   }
 
+  @Transactional(readOnly = true)
+  public Agendamento buscarPorIdEUsuario(Long id, String email) {
+    return agendamentoRepository
+        .findByIdAndPacienteOrMedicoEmail(id, email)
+        .orElseThrow(() -> new AcessoNegadoException("Acesso negado ao usuário: " + email));
+  }
+
   @Transactional(readOnly = false)
-  public void editar(Agendamento agendamento, String username) {
-    Agendamento ag = buscarPorId(agendamento.getId());
+  public void editar(Agendamento agendamento, String email) {
+    Agendamento ag = buscarPorIdEUsuario(agendamento.getId(), email);
     ag.setEspecialidade(agendamento.getEspecialidade());
     ag.setMedico(agendamento.getMedico());
     ag.setDataConsulta(agendamento.getDataConsulta());
