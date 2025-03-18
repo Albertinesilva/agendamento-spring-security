@@ -68,7 +68,7 @@ public class SecurityConfig {
         .requestMatchers("/u/**").hasAuthority(ADMIN)
 
         // Permissões para Médicos
-        .requestMatchers("/medicos/especialidade/titulo/*").hasAuthority(PACIENTE)
+        .requestMatchers("/medicos/especialidade/titulo/*").hasAnyAuthority(MEDICO, PACIENTE)
         .requestMatchers("/medicos/dados", "/medicos/salvar", "/medicos/editar").hasAnyAuthority(ADMIN, MEDICO)
         .requestMatchers("/medicos/**").hasAuthority(MEDICO)
 
