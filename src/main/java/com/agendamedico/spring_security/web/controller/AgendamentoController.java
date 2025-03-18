@@ -52,17 +52,18 @@ public class AgendamentoController {
   }
 
   // salvar uma consulta agendada
-  @PostMapping({ "/salvar" })
+  @PostMapping("/salvar")
   public String salvar(Agendamento agendamento, RedirectAttributes attr, @AuthenticationPrincipal User user) {
     Paciente paciente = pacienteService.buscarPorUsuarioEmail(user.getUsername());
-    String titulo = agendamento.getEspecialidade().getTitulo();
-    Especialidade especialidade = especialidadeService.buscarPorTitulos(new String[] { titulo })
-        .stream().findFirst().get();
+
+    Especialidade especialidade = especialidadeService
+        .buscarPorTitulos(new String[] { agendamento.getEspecialidade().getTitulo() })
+        .stream().findFirst().orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
+
     agendamento.setPaciente(paciente);
     agendamento.setEspecialidade(especialidade);
-    agendamentoService.salvar(agendamento);
-    attr.addFlashAttribute("sucesso", "Sua consulta foi agendada com sucesso.");
-    return "redirect:/agendamentos/agendar";
+
+    return agendamentoService.processarAgendamento(paciente, agendamento, attr);
   }
 
   @GetMapping({ "/historico/paciente", "historico/consultas" })

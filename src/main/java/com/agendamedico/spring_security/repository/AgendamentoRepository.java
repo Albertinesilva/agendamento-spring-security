@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.agendamedico.spring_security.domain.Agendamento;
@@ -47,13 +46,5 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             + "from Agendamento a "
             + "where a.medico.usuario.email like :email")
     Page<HistoricoPaciente> findHistoricoByMedicoEmail(String email, Pageable pageable);
-
-    @Query("select count(a) > 0 from Agendamento a " +
-            "where a.paciente.id = :pacienteId " +
-            "and a.dataConsulta = :data " +
-            "and a.horario.id = :horarioId")
-    boolean existsByPacienteAndDataAndHorario(@Param("pacienteId") Long pacienteId,
-            @Param("data") LocalDate data,
-            @Param("horarioId") Long horarioId);
 
 }

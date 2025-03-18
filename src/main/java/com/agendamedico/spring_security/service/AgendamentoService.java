@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.agendamedico.spring_security.datatables.Datatables;
 import com.agendamedico.spring_security.datatables.DatatablesColunas;
 import com.agendamedico.spring_security.domain.Agendamento;
 import com.agendamedico.spring_security.domain.Horario;
+import com.agendamedico.spring_security.domain.Paciente;
 import com.agendamedico.spring_security.repository.AgendamentoRepository;
 import com.agendamedico.spring_security.repository.projection.HistoricoPaciente;
 
@@ -53,8 +55,25 @@ public class AgendamentoService {
     return datatables.getResponse(page);
   }
 
-  public boolean existeAgendamentoParaPacienteNoMesmoHorario(Long pacienteId, LocalDate data, Long horarioId) {
-    return agendamentoRepository.existsByPacienteAndDataAndHorario(pacienteId, data, horarioId);
+  public String processarAgendamento(Paciente paciente, Agendamento agendamento, RedirectAttributes attr) {
+    boolean existeAgendamento = paciente.getAgendamentos().stream()
+        .anyMatch(a -> a.getDataConsulta().equals(agendamento.getDataConsulta()) &&
+            a.getHorario().getId().equals(agendamento.getHorario().getId()));
+
+    return existeAgendamento
+        ? processarFalha(attr)
+        : processarSucesso(agendamento, attr);
+  }
+
+  private String processarFalha(RedirectAttributes attr) {
+    attr.addFlashAttribute("falha", "Você já tem uma consulta agendada nesse horário.");
+    return "redirect:/agendamentos/agendar";
+  }
+
+  private String processarSucesso(Agendamento agendamento, RedirectAttributes attr) {
+    salvar(agendamento);
+    attr.addFlashAttribute("sucesso", "Sua consulta foi agendada com sucesso.");
+    return "redirect:/agendamentos/agendar";
   }
 
 }
