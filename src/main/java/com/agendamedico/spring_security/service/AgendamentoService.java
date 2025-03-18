@@ -87,6 +87,11 @@ public class AgendamentoService {
         : processarSucesso(agendamento, attr);
   }
 
+  @Transactional(readOnly = false)
+  public void remover(Long id) {
+    agendamentoRepository.deleteById(id);
+  }
+
   private String processarFalha(RedirectAttributes attr) {
     attr.addFlashAttribute("falha", "Você já tem uma consulta agendada nesse horário.");
     return "redirect:/agendamentos/agendar";
