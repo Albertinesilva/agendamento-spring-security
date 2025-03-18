@@ -79,7 +79,7 @@ public class MedicoService {
    * @param idEsp O ID da especialização a ser removida.
    */
   @Transactional(readOnly = false)
-  public void excluirEspecializacao(Long idMed, Long idEsp) {
+  public void excluirEspecialidadePorMedico(Long idMed, Long idEsp) {
     Medico medico = medicoRepository.findById(idMed).get();
     medico.getEspecialidades().removeIf(e -> e.getId().equals(idEsp));
   }
@@ -87,6 +87,11 @@ public class MedicoService {
   @Transactional(readOnly = true)
   public List<Medico> buscarMedicosPorEspecialidade(String titulo) {
     return medicoRepository.findByMedicosPorEspecialidade(titulo);
+  }
+
+  @Transactional(readOnly = true)
+  public boolean existeEspecialidadeAgendada(Long idMed, Long idEsp) {
+    return medicoRepository.hasEspecialidadeAgendada(idMed, idEsp).isPresent();
   }
 
 }
