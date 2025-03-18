@@ -96,7 +96,33 @@
 
 	</section>
 	<script th:src="@{/js/agendamento.js(v=${version})}" th:fragment="js"></script>
-	<script th:inline="javascript" th:fragment="inlinescript"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		// buscar o médico pela especialidade
+		/*[# th:if="${agendamento.medico != null}"]*/
+		$(document).ready(function () {
+			// Passando o valor do id e titulo diretamente para o JavaScript, com fallback para 0 caso o valor não esteja presente
+			var id = /*[[${ agendamento.medico.id } ?: 0 ]]*/ 0;  // Fallback para 0 caso o id não exista
+			var titulo = /*[[${ agendamento.especialidade.titulo } ?: '']]*/ ''; // Fallback para string vazia caso o título não exista
+
+			// Verifique se os valores estão sendo passados corretamente
+			console.log("ID: " + id);
+			console.log("Título: " + titulo);
+
+			// Realizando a requisição AJAX
+			$.get("/medicos/especialidade/titulo/" + titulo, function (result) {
+				// Iterando pelos resultados e gerando o HTML dinamicamente
+				$.each(result, function (k, v) {
+					$("#medicos").append(
+						'<div class="custom-control custom-radio">'
+						+ '<input class="custom-control-input" type="radio" id="customRadio' + k + '" name="medico.id" value="' + v.id + '" required ' + (v.id == id ? "checked" : "") + ' />'
+						+ '<label class="custom-control-label" for="customRadio' + k + '">' + v.nome + '</label>'
+						+ '</div>'
+					);
+				});
+			});
+		});
+		/*[/]*/
+	</script>
 </body>
 
 </html>

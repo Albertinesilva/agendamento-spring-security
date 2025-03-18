@@ -55,6 +55,10 @@ public class AgendamentoService {
     return datatables.getResponse(page);
   }
 
+  public Agendamento buscarPorId(Long id) {
+    return agendamentoRepository.findById(id).get();
+  }
+
   public String processarAgendamento(Paciente paciente, Agendamento agendamento, RedirectAttributes attr) {
     boolean existeAgendamento = paciente.getAgendamentos().stream()
         .anyMatch(a -> a.getDataConsulta().equals(agendamento.getDataConsulta()) &&
