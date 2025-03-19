@@ -1,11 +1,11 @@
 package com.agendamedico.spring_security.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+// import org.springframework.security.authentication.ProviderManager;
+// import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.agendamedico.spring_security.domain.PerfilTipo;
-import com.agendamedico.spring_security.service.UsuarioService;
 
 /**
  * Classe de configuração de segurança do Spring Security.
@@ -39,9 +38,6 @@ public class SecurityConfig {
   private static final String MEDICO = PerfilTipo.MEDICO.getDesc();
   private static final String PACIENTE = PerfilTipo.PACIENTE.getDesc();
 
-  @Autowired
-  private UsuarioService usuarioService;
-
   /**
    * Configura a cadeia de filtros de segurança para controle de acessos.
    * <p>
@@ -58,7 +54,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-    http.authorizeHttpRequests(authorize -> authorize
+    http.authorizeHttpRequests((authorize) -> authorize
         // Permite acesso público a arquivos estáticos
         .requestMatchers("/webjars/**", "/css/**", "/image/**", "/js/**").permitAll()
         .requestMatchers("/", "/home").permitAll()
@@ -119,39 +115,45 @@ public class SecurityConfig {
   }
 
   /**
-   * Configura o gerenciador de autenticação do Spring Security.
-   * <p>
-   * O {@code AuthenticationManager} utiliza um {@code DaoAuthenticationProvider}
-   * para buscar usuários e validar suas credenciais.
-   * </p>
-   * <p>
-   * Exemplo de uso:
-   * 
-   * <pre>
-   * {@code
-   * AuthenticationManager authManager = authenticationManager(userDetailsService, passwordEncoder);
-   * Authentication authentication = authManager
-   *     .authenticate(new UsernamePasswordAuthenticationToken("user", "password"));
-   * }
-   * </pre>
-   * </p>
-   *
-   * @param userDetailsService Serviço que fornece os detalhes do usuário
-   *                           autenticado.
-   * @param passwordEncoder    Codificador de senhas utilizado para validação.
-   * @return Uma instância de {@link AuthenticationManager} gerenciando a
-   *         autenticação.
-   * @see DaoAuthenticationProvider
-   */
+    * Define um bean para o {@link AuthenticationManager}, utilizando a configuração automática do Spring Security.
+    * 
+    * <p>Este método obtém e retorna a instância gerenciada de {@link AuthenticationManager} 
+    * a partir de {@link AuthenticationConfiguration}, permitindo que o Spring descubra automaticamente
+    * a implementação de {@link UserDetailsService} presente na aplicação.</p>
+    * 
+    * @param authenticationConfiguration configuração de autenticação do Spring Security.
+    * @return uma instância de {@link AuthenticationManager} gerenciada pelo Spring.
+    * @throws Exception caso ocorra um erro ao obter o {@link AuthenticationManager}.
+    */
   @Bean
-  public AuthenticationManager authenticationManager(
-      UserDetailsService userDetailsService,
-      PasswordEncoder passwordEncoder) {
-
-    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder);
-
-    return new ProviderManager(authProvider);
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) 
+  throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
   }
+
+  /**
+    * Define um bean para o {@link AuthenticationManager}, configurando manualmente um {@link DaoAuthenticationProvider}.
+    * 
+    * <p>Este método cria um {@link DaoAuthenticationProvider} que utiliza a implementação de {@link UserDetailsService} 
+    * fornecida pela aplicação para carregar os detalhes do usuário e um {@link PasswordEncoder} para verificar as credenciais.</p>
+    * 
+    * <p>O {@link AuthenticationManager} retornado é gerenciado por um {@link ProviderManager}, que encapsula 
+    * o {@link DaoAuthenticationProvider} criado.</p>
+    * 
+    * @param userDetailsService serviço responsável por carregar os detalhes do usuário durante a autenticação.
+    * @param passwordEncoder mecanismo utilizado para codificar e verificar senhas.
+    * @return uma instância de {@link AuthenticationManager} configurada com {@link DaoAuthenticationProvider}.
+    */
+  // @Bean
+  // public AuthenticationManager authenticationManager(
+  //   UserDetailsService userDetailsService,
+  //   PasswordEncoder passwordEncoder) {
+
+  //   DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+  //   authProvider.setUserDetailsService(userDetailsService);
+  //   authProvider.setPasswordEncoder(passwordEncoder);
+
+  //   return new ProviderManager(authProvider);
+  // }
+
 }
