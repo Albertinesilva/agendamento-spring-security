@@ -59,6 +59,7 @@ public class SecurityConfig {
         .requestMatchers("/webjars/**", "/css/**", "/image/**", "/js/**").permitAll()
         .requestMatchers("/", "/home").permitAll()
         .requestMatchers("/u/novo/cadastro", "/u/cadastro/realizado", "/u/cadastro/paciente/salvar").permitAll()
+        .requestMatchers("/u/confirmacao/cadastro").permitAll()
 
         // Permissões para Administradores
         .requestMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(MEDICO, PACIENTE)
