@@ -1,6 +1,7 @@
 package com.agendamedico.spring_security.service;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,8 @@ public class UsuarioService implements UserDetailsService {
   @Override
   @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Usuario usuario = buscarPorEmail(username);
+    Usuario usuario = buscarPorEmailEAtivo(username)
+        .orElseThrow(() -> new UsernameNotFoundException("Usuário " + username + " não encontrado."));
     // return new User(
     // usuario.getEmail(),
     // usuario.getSenha(),
@@ -169,11 +171,17 @@ public class UsuarioService implements UserDetailsService {
     usuarioRepository.save(usuarioLogado);
   }
 
+  @Transactional(readOnly = false)
   public void salvarCadastroPaciente(Usuario usuario) {
     String crypt = new BCryptPasswordEncoder().encode(usuario.getSenha());
     usuario.setSenha(crypt);
     usuario.addPerfil(PerfilTipo.PACIENTE);
     usuarioRepository.save(usuario);
+  }
+
+  @Transactional(readOnly = true)
+  public Optional<Usuario> buscarPorEmailEAtivo(String email) {
+    return usuarioRepository.findByEmailAndAtivo(email);
   }
 
 }
