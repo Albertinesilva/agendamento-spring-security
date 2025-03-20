@@ -25,6 +25,7 @@ import com.agendamedico.spring_security.domain.Usuario;
 import com.agendamedico.spring_security.service.MedicoService;
 import com.agendamedico.spring_security.service.UsuarioService;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
@@ -155,7 +156,7 @@ public class UsuarioController {
 
   // receber o form da página cadastrar-se
   @PostMapping("/cadastro/paciente/salvar")
-  public String salvarCadastroPaciente(Usuario usuario, BindingResult result) {
+  public String salvarCadastroPaciente(Usuario usuario, BindingResult result) throws MessagingException {
     try {
       usuarioService.salvarCadastroPaciente(usuario);
     } catch (DataIntegrityViolationException ex) {

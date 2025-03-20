@@ -1,5 +1,6 @@
 package com.agendamedico.spring_security.service;
 
+import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import com.agendamedico.spring_security.domain.PerfilTipo;
 import com.agendamedico.spring_security.domain.Usuario;
 import com.agendamedico.spring_security.repository.UsuarioRepository;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
@@ -31,6 +33,9 @@ public class UsuarioService implements UserDetailsService {
 
   @Autowired
   private Datatables datatables;
+
+  @Autowired
+  private EmailService emailService;
 
   /**
    * Busca um usuário por seu email.
@@ -172,16 +177,34 @@ public class UsuarioService implements UserDetailsService {
   }
 
   @Transactional(readOnly = false)
-  public void salvarCadastroPaciente(Usuario usuario) {
+  public void salvarCadastroPaciente(Usuario usuario) throws MessagingException {
     String crypt = new BCryptPasswordEncoder().encode(usuario.getSenha());
     usuario.setSenha(crypt);
     usuario.addPerfil(PerfilTipo.PACIENTE);
     usuarioRepository.save(usuario);
+
+    emailDeConfirmacaoDeCadastro(usuario.getEmail());
   }
 
   @Transactional(readOnly = true)
   public Optional<Usuario> buscarPorEmailEAtivo(String email) {
     return usuarioRepository.findByEmailAndAtivo(email);
+  }
+
+  public void emailDeConfirmacaoDeCadastro(String email) throws MessagingException {
+    String codigo = Base64.getEncoder().encodeToString(email.getBytes());
+    emailService.enviarPedidoDeConfirmacaoDeCadastro(email, codigo);
+  }
+
+  @Transactional(readOnly = false)
+  public void ativarCadastroPaciente(String codigo) {
+    String email = new String(Base64.getDecoder().decode(codigo));
+    Usuario usuario = usuarioRepository.findByEmail(email);
+    if (usuario.hasNotId()) {
+      throw new UsernameNotFoundException("Não foi possível ativar seu cadastro. Entre em contato com o suporte.");
+    }
+    usuario.setAtivo(true);
+    usuarioRepository.save(usuario);
   }
 
 }
