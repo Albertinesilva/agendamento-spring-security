@@ -58,6 +58,7 @@ public class SecurityConfig {
         // Permite acesso público a arquivos estáticos
         .requestMatchers("/webjars/**", "/css/**", "/image/**", "/js/**").permitAll()
         .requestMatchers("/", "/home").permitAll()
+        .requestMatchers("/u/novo/cadastro", "/u/cadastro/realizado", "/u/cadastro/paciente/salvar").permitAll()
 
         // Permissões para Administradores
         .requestMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(MEDICO, PACIENTE)

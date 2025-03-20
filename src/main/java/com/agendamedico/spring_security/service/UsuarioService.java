@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.agendamedico.spring_security.datatables.Datatables;
 import com.agendamedico.spring_security.datatables.DatatablesColunas;
 import com.agendamedico.spring_security.domain.Perfil;
+import com.agendamedico.spring_security.domain.PerfilTipo;
 import com.agendamedico.spring_security.domain.Usuario;
 import com.agendamedico.spring_security.repository.UsuarioRepository;
 
@@ -166,6 +167,13 @@ public class UsuarioService implements UserDetailsService {
   public void alterarSenha(Usuario usuarioLogado, String senha1) {
     usuarioLogado.setSenha(new BCryptPasswordEncoder().encode(senha1));
     usuarioRepository.save(usuarioLogado);
+  }
+
+  public void salvarCadastroPaciente(Usuario usuario) {
+    String crypt = new BCryptPasswordEncoder().encode(usuario.getSenha());
+    usuario.setSenha(crypt);
+    usuario.addPerfil(PerfilTipo.PACIENTE);
+    usuarioRepository.save(usuario);
   }
 
 }
