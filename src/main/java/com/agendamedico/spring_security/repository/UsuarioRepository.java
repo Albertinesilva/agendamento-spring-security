@@ -32,7 +32,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
    * @param pageable Objeto contendo as informações de paginação.
    * @return Uma página de usuários que correspondem ao critério de busca.
    */
-  @Query("select u from Usuario u "
+  @Query("select distinct u from Usuario u "
       + "join u.perfis p "
       + "where u.email like :search% OR p.desc like :search%")
   Page<Usuario> findByEmailOrPerfil(String search, Pageable pageable);

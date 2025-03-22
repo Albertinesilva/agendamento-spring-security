@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -205,6 +206,16 @@ public class UsuarioService implements UserDetailsService {
     }
     usuario.setAtivo(true);
     usuarioRepository.save(usuario);
+  }
+
+  @Transactional(readOnly = false)
+  public void pedidoRedefinicaoDeSenha(String email) throws MessagingException {
+    Usuario usuario = buscarPorEmailEAtivo(email)
+        .orElseThrow(() -> new UsernameNotFoundException("Usuário " + email + " não encontrado."));
+    String verificador = RandomStringUtils.randomAlphanumeric(6);
+    usuario.setCodigoVerificador(verificador);
+
+    emailService.enviarPedidoDeRedefinicaoSenha(email, verificador);
   }
 
 }
