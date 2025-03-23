@@ -1,5 +1,6 @@
 package com.agendamedico.spring_security.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,9 @@ import com.agendamedico.spring_security.domain.PerfilTipo;
 @EnableWebSecurity
 public class SecurityConfig {
 
+  @Value("${app.security.remember-me-key}")
+  private String rememberMeKey;
+
   private static final String ADMIN = PerfilTipo.ADMIN.getDesc();
   private static final String MEDICO = PerfilTipo.MEDICO.getDesc();
   private static final String PACIENTE = PerfilTipo.PACIENTE.getDesc();
@@ -61,7 +65,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests((authorize) -> authorize
         // Permite acesso público a arquivos estáticos
         .requestMatchers("/webjars/**", "/css/**", "/image/**", "/js/**").permitAll()
-        .requestMatchers("/", "/home").permitAll()
+        .requestMatchers("/", "/home", "/expired").permitAll()
         .requestMatchers("/u/novo/cadastro", "/u/cadastro/realizado", "/u/cadastro/paciente/salvar").permitAll()
         .requestMatchers("/u/confirmacao/cadastro").permitAll()
         .requestMatchers("/u/p/**").permitAll()
@@ -83,37 +87,44 @@ public class SecurityConfig {
         .requestMatchers("/especialidades/titulo").hasAnyAuthority(ADMIN, MEDICO, PACIENTE)
         .requestMatchers("/especialidades/**").hasAnyAuthority(ADMIN)
 
-        .anyRequest().authenticated())
+        .anyRequest().authenticated() // Restringe acesso a rotas não especificadas
+    )
 
         // Configuração de login
         .formLogin(formLogin -> formLogin
             .loginPage("/login") // Página customizada de login
             .defaultSuccessUrl("/", true) // Redireciona após login bem-sucedido
             .failureUrl("/login-error") // Redireciona em caso de falha
-            .permitAll())
-
+            .permitAll() // Permite acesso a todos os usuários
+        )
         // Configuração de logout
         .logout(logout -> logout
             .logoutSuccessUrl("/") // Redireciona para home após logout
             .invalidateHttpSession(true) // Invalida sessão após logout
             .deleteCookies("JSESSIONID")// Remove cookies de sessão
         )
-
         // Tratamento de acessos negados
         .exceptionHandling(exception -> exception
             .accessDeniedPage("/acesso-negado") // Página customizada de acesso negado
         )
         // Configuração de sessão e cookies de autenticação
         .rememberMe(rememberMe -> rememberMe
-            .key("chave-secreta") // Opcional, define uma chave única
+            .key(rememberMeKey) // Opcional, define uma chave única
             .tokenValiditySeconds(86400) // Tempo de validade do token (1 dia)
         )
         // Configuração de sessão (separada de rememberMe)
         .sessionManagement((session) -> session
-            .maximumSessions(1)
-            .expiredUrl("/expired")
-            .maxSessionsPreventsLogin(true)
-            .sessionRegistry(sessionRegistry()));
+            .maximumSessions(1) // Número máximo de sessões
+            .expiredUrl("/expired") // Página de sessão expirada
+            .maxSessionsPreventsLogin(false) // Permite login simultâneo
+            .sessionRegistry(sessionRegistry()) // Registra sessões ativas
+        )
+        // Configuração de sessão (separada de rememberMe)
+        .sessionManagement((session) -> session
+            .sessionFixation() // Proteção contra ataques de fixação de sessão
+            .newSession() // Cria uma nova sessão
+            .sessionAuthenticationStrategy(sessionAuthStrategy()) // Estratégia de autenticação de sessão
+        );
     return http.build();
   }
 
