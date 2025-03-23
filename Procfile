@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/spring_security-0.9.jar 
+web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/spring_security-0.9.jar
