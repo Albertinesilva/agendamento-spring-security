@@ -1,18 +1,22 @@
 package com.agendamedico.spring_security.config;
 
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-// import org.springframework.security.authentication.ProviderManager;
-// import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.agendamedico.spring_security.domain.PerfilTipo;
 
@@ -92,12 +96,24 @@ public class SecurityConfig {
         .logout(logout -> logout
             .logoutSuccessUrl("/") // Redireciona para home após logout
             .invalidateHttpSession(true) // Invalida sessão após logout
-            .deleteCookies("JSESSIONID")) // Remove cookies de sessão
+            .deleteCookies("JSESSIONID")// Remove cookies de sessão
+        )
 
         // Tratamento de acessos negados
         .exceptionHandling(exception -> exception
-            .accessDeniedPage("/acesso-negado"));
-
+            .accessDeniedPage("/acesso-negado") // Página customizada de acesso negado
+        )
+        // Configuração de sessão e cookies de autenticação
+        .rememberMe(rememberMe -> rememberMe
+            .key("chave-secreta") // Opcional, define uma chave única
+            .tokenValiditySeconds(86400) // Tempo de validade do token (1 dia)
+        )
+        // Configuração de sessão (separada de rememberMe)
+        .sessionManagement((session) -> session
+            .maximumSessions(1)
+            .expiredUrl("/expired")
+            .maxSessionsPreventsLogin(true)
+            .sessionRegistry(sessionRegistry()));
     return http.build();
   }
 
@@ -118,45 +134,43 @@ public class SecurityConfig {
   }
 
   /**
-    * Define um bean para o {@link AuthenticationManager}, utilizando a configuração automática do Spring Security.
-    * 
-    * <p>Este método obtém e retorna a instância gerenciada de {@link AuthenticationManager} 
-    * a partir de {@link AuthenticationConfiguration}, permitindo que o Spring descubra automaticamente
-    * a implementação de {@link UserDetailsService} presente na aplicação.</p>
-    * 
-    * @param authenticationConfiguration configuração de autenticação do Spring Security.
-    * @return uma instância de {@link AuthenticationManager} gerenciada pelo Spring.
-    * @throws Exception caso ocorra um erro ao obter o {@link AuthenticationManager}.
-    */
+   * Define um bean para o {@link AuthenticationManager}, utilizando a
+   * configuração automática do Spring Security.
+   * 
+   * <p>
+   * Este método obtém e retorna a instância gerenciada de
+   * {@link AuthenticationManager}
+   * a partir de {@link AuthenticationConfiguration}, permitindo que o Spring
+   * descubra automaticamente
+   * a implementação de {@link UserDetailsService} presente na aplicação.
+   * </p>
+   * 
+   * @param authenticationConfiguration configuração de autenticação do Spring
+   *                                    Security.
+   * @return uma instância de {@link AuthenticationManager} gerenciada pelo
+   *         Spring.
+   * @throws Exception caso ocorra um erro ao obter o
+   *                   {@link AuthenticationManager}.
+   */
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) 
-  throws Exception {
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+      throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
-  /**
-    * Define um bean para o {@link AuthenticationManager}, configurando manualmente um {@link DaoAuthenticationProvider}.
-    * 
-    * <p>Este método cria um {@link DaoAuthenticationProvider} que utiliza a implementação de {@link UserDetailsService} 
-    * fornecida pela aplicação para carregar os detalhes do usuário e um {@link PasswordEncoder} para verificar as credenciais.</p>
-    * 
-    * <p>O {@link AuthenticationManager} retornado é gerenciado por um {@link ProviderManager}, que encapsula 
-    * o {@link DaoAuthenticationProvider} criado.</p>
-    * 
-    * @param userDetailsService serviço responsável por carregar os detalhes do usuário durante a autenticação.
-    * @param passwordEncoder mecanismo utilizado para codificar e verificar senhas.
-    * @return uma instância de {@link AuthenticationManager} configurada com {@link DaoAuthenticationProvider}.
-    */
-  // @Bean
-  // public AuthenticationManager authenticationManager(
-  //   UserDetailsService userDetailsService,
-  //   PasswordEncoder passwordEncoder) {
+  @Bean
+  public SessionAuthenticationStrategy sessionAuthStrategy() {
+    return new RegisterSessionAuthenticationStrategy(sessionRegistry());
+  }
 
-  //   DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-  //   authProvider.setUserDetailsService(userDetailsService);
-  //   authProvider.setPasswordEncoder(passwordEncoder);
+  @Bean
+  public SessionRegistry sessionRegistry() {
+    return new SessionRegistryImpl();
+  }
 
-  //   return new ProviderManager(authProvider);
-  // }
+  @Bean
+  public ServletListenerRegistrationBean<?> servletListenerRegistrationBean() {
+    return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
+  }
 
 }
