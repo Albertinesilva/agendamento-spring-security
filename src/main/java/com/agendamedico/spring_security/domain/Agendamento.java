@@ -55,6 +55,28 @@ public class Agendamento extends AbstractEntity {
 	@DateTimeFormat(iso = ISO.DATE)
 	private LocalDate dataConsulta;
 
+	public Agendamento() {
+
+	}
+
+	/**
+	 * Cria um novo agendamento.
+	 * 
+	 * @param especialidade a especialidade médica do agendamento.
+	 * @param medico        o médico responsável pelo atendimento.
+	 * @param paciente      o paciente que será atendido.
+	 * @param horario       o horário da consulta médica.
+	 * @param dataConsulta  a data da consulta médica.
+	 */
+	public Agendamento(Especialidade especialidade, Medico medico, Paciente paciente, Horario horario,
+			LocalDate dataConsulta) {
+		this.especialidade = especialidade;
+		this.medico = medico;
+		this.paciente = paciente;
+		this.horario = horario;
+		this.dataConsulta = dataConsulta;
+	}
+
 	/**
 	 * Obtém a especialidade associada ao agendamento.
 	 * 

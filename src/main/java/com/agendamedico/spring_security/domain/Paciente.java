@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public class Paciente extends AbstractEntity {
 	 */
 	@JsonIgnore
 	@OneToMany(mappedBy = "paciente")
-	private List<Agendamento> agendamentos;
+	private List<Agendamento> agendamentos = new ArrayList<>();
 
 	/**
 	 * Usuário associado ao paciente.
@@ -57,6 +58,14 @@ public class Paciente extends AbstractEntity {
 	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
+
+	public Paciente() {
+
+	}
+
+	public Paciente(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 	/**
 	 * Obtém o nome do paciente.

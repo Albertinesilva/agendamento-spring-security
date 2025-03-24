@@ -1,6 +1,7 @@
 package com.agendamedico.spring_security.web.controller;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -60,8 +61,13 @@ public class AgendamentoController {
   @PreAuthorize("hasAuthority('PACIENTE')")
   @PostMapping("/salvar")
   public String salvar(Agendamento agendamento, RedirectAttributes attr, @AuthenticationPrincipal User user) {
-    Paciente paciente = pacienteService.buscarPorUsuarioEmail(user.getUsername());
+    Optional<Paciente> pacienteOptional = pacienteService.buscarPorUsuarioEmail(user.getUsername());
 
+    if (pacienteOptional.isEmpty()) {
+      attr.addFlashAttribute("falha", "Você precisa completar seu cadastro antes de agendar uma consulta.");
+      return "redirect:/pacientes/dados";
+    }
+    Paciente paciente = pacienteOptional.get();
     Especialidade especialidade = especialidadeService
         .buscarPorTitulos(new String[] { agendamento.getEspecialidade().getTitulo() })
         .stream().findFirst().orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));

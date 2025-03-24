@@ -42,6 +42,15 @@ public class Especialidade extends AbstractEntity {
 	inverseJoinColumns = @JoinColumn(name = "id_medico", referencedColumnName = "id"))
 	private List<Medico> medicos;
 
+	public Especialidade() {
+	}
+
+	public Especialidade(String titulo, String descricao, List<Medico> medicos) {
+		this.titulo = titulo;
+		this.descricao = descricao;
+		this.medicos = medicos;
+	}
+
 	/**
 	 * Obtém o título da especialidade.
 	 * 

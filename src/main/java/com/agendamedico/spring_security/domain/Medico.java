@@ -1,6 +1,8 @@
 package com.agendamedico.spring_security.domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -61,7 +63,7 @@ public class Medico extends AbstractEntity {
 	@JoinTable(name = "medicos_tem_especialidades", 
 	joinColumns = @JoinColumn(name = "id_medico", referencedColumnName = "id"), 
 	inverseJoinColumns = @JoinColumn(name = "id_especialidade", referencedColumnName = "id"))
-	private Set<Especialidade> especialidades;
+	private Set<Especialidade> especialidades = new HashSet<>();
 
 	/**
 	 * Agendamentos associados ao médico.
@@ -70,7 +72,7 @@ public class Medico extends AbstractEntity {
 	 */
 	@JsonIgnore
 	@OneToMany(mappedBy = "medico")
-	private List<Agendamento> agendamentos;
+	private List<Agendamento> agendamentos = new ArrayList<>();
 
 	/**
 	 * Usuário associado ao médico.

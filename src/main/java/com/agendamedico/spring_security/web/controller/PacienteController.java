@@ -15,7 +15,7 @@ import com.agendamedico.spring_security.service.PacienteService;
 import com.agendamedico.spring_security.service.UsuarioService;
 
 @Controller
-@RequestMapping("pacientes")
+@RequestMapping("/pacientes")
 public class PacienteController {
 
   @Autowired
@@ -24,13 +24,10 @@ public class PacienteController {
   @Autowired
   private UsuarioService usuarioService;
 
-  // abrir pagina de dados pessoais do paciente
   @GetMapping("/dados")
-  public String cadastrar(Paciente paciente, ModelMap model, @AuthenticationPrincipal User user) {
-    paciente = pacienteService.buscarPorUsuarioEmail(user.getUsername());
-    if (paciente.hasNotId()) {
-      paciente.setUsuario(new Usuario(user.getUsername()));
-    }
+  public String cadastrar(ModelMap model, @AuthenticationPrincipal User user) {
+    Paciente paciente = pacienteService.buscarPorUsuarioEmail(user.getUsername())
+        .orElseGet(() -> new Paciente(new Usuario(user.getUsername())));
     model.addAttribute("paciente", paciente);
     return "paciente/cadastro";
   }

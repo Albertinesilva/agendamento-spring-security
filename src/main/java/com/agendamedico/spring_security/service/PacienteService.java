@@ -1,5 +1,7 @@
 package com.agendamedico.spring_security.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +16,8 @@ public class PacienteService {
   private PacienteRepository pacienteRepository;
 
   @Transactional(readOnly = true)
-  public Paciente buscarPorUsuarioEmail(String email) {
-    return pacienteRepository.findByUsuarioEmail(email).orElse(new Paciente());
+  public Optional<Paciente> buscarPorUsuarioEmail(String email) {
+    return pacienteRepository.findByUsuarioEmail(email);
   }
 
   @Transactional(readOnly = false)
