@@ -27,7 +27,7 @@ public class EmailService {
     Context context = new Context();
     context.setVariable("titulo", "Bem-vindo a clínica Spring Security");
     context.setVariable("texto", "Precisamos que confirme seu cadastro, clicando no link abaixo");
-    context.setVariable("linkConfirmacao", "http://localhost:8080/u/confirmacao/cadastro?codigo=" + codigo);
+    context.setVariable("linkConfirmacao", "https://clinica-spring-security-b074f1332545.herokuapp.com/u/confirmacao/cadastro?codigo=" + codigo);
 
     String html = templateEngine.process("email/confirmacao", context);
     helper.setTo(destinatario);
