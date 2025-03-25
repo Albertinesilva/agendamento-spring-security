@@ -39,7 +39,7 @@ public class Usuario extends AbstractEntity {
 	private List<Perfil> perfis = new ArrayList<>();
 
 	/** Indica se o usuário está ativo ou não. */
-	@Column(name = "ativo", nullable = false, columnDefinition = "TINYINT(1)")
+	@Column(name = "ativo", nullable = false)
 	private boolean ativo;
 
 	/** Código verificador de 6 caracteres para o usuário. */
