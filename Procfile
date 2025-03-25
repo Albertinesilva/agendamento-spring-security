@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/consultamedica-0.9.jar
+java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/consultamedica-0.0.1-SNAPSHOT.jar
