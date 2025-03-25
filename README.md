@@ -88,6 +88,15 @@ O sistema implementa os seguintes recursos de segurança:
 
 ---
 
+**🌍 Deploy e Hospedagem**
+
+O projeto foi implantado na plataforma Heroku, permitindo que esteja disponível online para demonstração. Embora o deploy não tenha sido abordado no curso, utilizei meu conhecimento prévio para configurar a aplicação, garantindo sua execução em um ambiente na nuvem.
+
+| **Acesse o projeto online:** | <a href="https://clinica-spring-security-b074f1332545.herokuapp.com/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Heroku_logo.svg/120px-Heroku_logo.svg.png" alt="Heroku" width="80" /></a> |
+|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+---
+
 **✅ Conclusão**
 
 Este sistema de agendamento de consultas oferece um ambiente seguro e funcional para usuários e administradores. Durante o desenvolvimento, tive a oportunidade de aprender e aplicar na prática diversas tecnologias, como Spring Boot, Spring Security, JPA, Thymeleaf e JavaMailSender, sob a orientação do professor [Marcio Ballem](https://mballem.com/cursos/).
