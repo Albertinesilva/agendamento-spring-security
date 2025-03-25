@@ -1,5 +1,6 @@
 package com.agendamedico.spring_security.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -40,7 +41,7 @@ public class Especialidade extends AbstractEntity {
 	@JoinTable(name = "medicos_tem_especialidades", 
 	joinColumns = @JoinColumn(name = "id_especialidade", referencedColumnName = "id"), 
 	inverseJoinColumns = @JoinColumn(name = "id_medico", referencedColumnName = "id"))
-	private List<Medico> medicos;
+	private List<Medico> medicos = new ArrayList<>();
 
 	public Especialidade() {
 	}
